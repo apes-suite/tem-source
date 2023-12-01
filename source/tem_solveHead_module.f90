@@ -40,7 +40,7 @@ module tem_solveHead_module
   ! include treelm modules
   use env_module,             only: LabelLen, PathLen
   ! This module has to be created on the fly by the waf environment
-  use tem_revision_module,    only: tem_solver_revision
+  use soi_revision_module,    only: soi_solver_revision
 
   ! include aotus module
   use aotus_module,    only: flu_State
@@ -110,7 +110,7 @@ module tem_solveHead_module
 
     me%solName  = trim(solName)
     me%version = trim(version)
-    me%revision = tem_solver_revision
+    me%revision = soi_solver_revision
 
   end subroutine tem_init_solveHead
 ! ****************************************************************************** !

@@ -908,7 +908,7 @@ contains
 ! ****************************************************************************** !
   !> dump bc properties
   subroutine dump_tem_BC_realArray( offset, arraylen, nElems, propdat, basename, &
-    &                               myPart, comm                                 )
+    &                               comm                                         )
     ! ---------------------------------------------------------------------------
     !> Offset of the local set of elements in the global list
     integer(kind=long_k), intent(in) :: offset
@@ -922,8 +922,6 @@ contains
     !! ".lua" for the header information and ".lsb" or ".msb" for the
     !! binary data.
     character(len=*), intent(in) :: basename
-    !> Partition to dump
-    integer, intent(in) :: myPart
     !> Communicator to use
     integer, intent(in) :: comm
     ! ---------------------------------------------------------------------------
@@ -1202,7 +1200,6 @@ contains
       &                         nElems   = nElems,    &
       &                         propdat  = me%qval,   &
       &                         basename = basename,  &
-      &                         myPart   = myPart,    &
       &                         comm     = comm       )
 
   end subroutine dump_tem_BC_qVal
@@ -1307,7 +1304,6 @@ contains
       &                         nElems   = nElems,    &
       &                         propdat  = me%normal, &
       &                         basename = basename,  &
-      &                         myPart   = myPart,    &
       &                         comm     = comm       )
 
   end subroutine dump_tem_BC_normal

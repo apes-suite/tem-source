@@ -48,7 +48,7 @@ module tem_aux_module
     &                                tem_push_to_rq_store
   use tem_tools_module,        only: tem_horizontalSpacer, upper_to_lower
   use tem_logging_module,      only: logUnit
-  use tem_revision_module ! Providing parameters on the compilation environment
+  use soi_revision_module ! Providing parameters on the compilation environment
 
   ! include aotus modules
   use flu_binding,  only: flu_State, cbuf_type, flu_free_cbuf
@@ -544,17 +544,17 @@ contains
     call tem_horizontalSpacer(fUnit = logUnit(1))
     write(logUnit(1),*) '| INFORMATION ON THE EXECUTABLE'
     write(logUnit(1),*) '| Revision of the code in this executable: ' &
-      &                 // trim(tem_solver_revision)
+      &                 // trim(soi_solver_revision)
     write(logUnit(1),*) '|'
-    write(logUnit(1),*) '| Compiled with '//trim(tem_FC_name) &
-      &                 // ' in version ' // trim(tem_FC_version)
-    write(logUnit(1),*) '| Using the command ' // trim(tem_FC_command)
+    write(logUnit(1),*) '| Compiled with '//trim(soi_FC_name) &
+      &                 // ' in version ' // trim(soi_FC_version)
+    write(logUnit(1),*) '| Using the command ' // trim(soi_FC_command)
     write(logUnit(1),*) '| And the following flags:'
-    do flagline = 1, tem_FC_nFlagLines
-      write(logUnit(1),*) '| ' // trim(tem_FC_flags(flagline))
+    do flagline = 1, soi_FC_nFlagLines
+      write(logUnit(1),*) '| ' // trim(soi_FC_flags(flagline))
     end do
     write(logUnit(1),*) '|'
-    write(logUnit(1),*) '| Build date: ' // trim(tem_build_date)
+    write(logUnit(1),*) '| Build date: ' // trim(soi_build_date)
     call tem_horizontalSpacer(fUnit = logUnit(1))
 
   end subroutine tem_print_execInfo

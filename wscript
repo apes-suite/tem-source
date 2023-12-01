@@ -2,14 +2,11 @@
 # encoding: utf-8
 # Harald Klimach 2011
 
-APPNAME = 'treelm'
+APPNAME = 'tem-source'
 VERSION = '1'
 
 import sys
 import os
-
-# Add the aotus subdirectory as path to search for modules.
-sys.path.append(os.path.join(sys.path[0], 'aotus'))
 
 top = '.'
 out = 'build'
@@ -18,7 +15,6 @@ def options(opt):
     '''Building options provided by the treelm library.
        Remember, all options can be displayed with waf --help.'''
 
-    opt.recurse('aotus')
     # General options
     opt.add_option('--nowarn', action='store_true', default=False,
                    help='Do not show compiler warnings.')
@@ -75,9 +71,7 @@ def configure(conf):
     import os
     from waflib import Logs
 
-    conf.recurse('aotus', 'subconf')
-
-    conf.vars = ['FC_NAME', 'FC_VERSION', 'FCFLAGS'] # Recompilation if any of these change
+    conf.load('revision_module')
 
     conf.setenv('')
     conf.env.ford_mainpage = 'tem_mainpage.md'
@@ -285,17 +279,6 @@ end program check_NAG_header''',
        Logs.warn('No sizeof function found, deactivating VTK output!')
        conf.env['no_vtk'] = True
 
-    # Initialize the coco preprocessing tool
-    conf.load('coco')
-    conf.env['COCOSET'] = 'default.coco'
-    if not conf.options.coco_reports:
-      # Make coco silent, if not explicitly asked for reports:
-      if conf.env.COCOFLAGS:
-        conf.env.COCOFLAGS.insert(0, '-s')
-        conf.env.COCOFLAGS.append('-ad')
-      else:
-        conf.env.COCOFLAGS = ['-s', '-ad']
-
     set_variant_flags(conf)
 
 
@@ -429,7 +412,7 @@ def set_variant_flags(conf):
     conf.setenv('debug', conf.env)
     set_fc_flags(conf, ['debug'] + warn, osfcflags)
     Logs.warn('Debug flags: ' + ' '.join(conf.env['FCFLAGS']))
-    conf.env.append_value('COCOFLAGS', ['-DDEBUG']) 
+    conf.env.append_value('COCOFLAGS', ['-DDEBUG'])
 
     conf.setenv('')
     conf.setenv('profile', conf.env)
@@ -475,11 +458,10 @@ def set_variant_flags(conf):
 
 
 def build(bld):
+    from revision_module import revision_module_file
     from waflib.extras.utest_results import utests
     from waflib import Logs
     import sys
-
-    bld(rule='cp ${SRC} ${TGT}', source=bld.env.COCOSET, target='coco.set')
 
     try:
        import subprocess # If subprocess is available and provides check_output
@@ -498,76 +480,11 @@ def build(bld):
     if bld.options.print_cmds:
         import waflib.extras.print_commands
 
-    ### Setup the tem_revision_module ###
-    find_solver_revision(bld)
-    fc_name_str = "".join(bld.env['FC_NAME'])
-    fc_version_str = ".".join(bld.env['FC_VERSION'])
-    fc_flags_str = " ".join(bld.env['FCFLAGS'])
-    link_flags_str = " ".join(bld.env['LINKFLAGS'])
-    builddate = datetime.datetime.now().strftime("%Y-%m-%d")
-
-    Logs.warn('Compiler: '+fc_name_str)
-    Logs.warn('Version : '+fc_version_str)
-    Logs.warn('Flags   : '+fc_flags_str)
-
-    flaglen = len(fc_flags_str)
-    nFlagLines = max((flaglen+71) // 72, 1)
-
-    revmod = bld.path.find_or_declare('source/tem_revision_module.f90')
-
-    modtext = """!> TreElm module for holding the revision of the solver
-!!
-!! A function to print these information is found in tem_aux_module, to
-!! avoid dependencies of this module on tem_tools_module for the tem_write.
-!*****************************************************************************!
-! WARNING: Do NOT change this file, as it will be overwritten during
-!          compilation.
-!*****************************************************************************!
-
-module tem_revision_module
-  implicit none
-  !> The HG revision of the application used for this executable.
-  character(len=13), parameter :: tem_solver_revision &
-    &                            = '%s'
-
-  !> Name of the compiler.
-  character(len=32), parameter :: tem_FC_name &
-    &                            = '%s'
-
-  !> The compilation command that was used to build this executable.
-  character(len=32), parameter :: tem_FC_command &
-    &                            = '%s'
-
-  !> The version of the Fortran compiler used in the compilation of this
-  !! executable.
-  character(len=32), parameter :: tem_FC_version &
-    &                            = '%s'
-
-  !> Number of lines needed to represent the compiler flags
-  integer, parameter :: tem_FC_nFlagLines = %i
-
-  !> The Fortran compiler flags used to compile this executable.
-  character(len=72), parameter :: tem_FC_flags(tem_FC_nFlagLines) &
-""" % (bld.env.solver_rev[:13], fc_name_str[:32], " ".join(bld.env.FC)[:32],
-       fc_version_str[:32], nFlagLines)
-    tempstr = fc_flags_str[0:72]
-    tempstr = tempstr + ' '*(72-len(tempstr))
-    modtext = modtext + """    & = [ '%s'""" % (tempstr[0:72])
-    for line in range(2,nFlagLines+1):
-       tempstr = fc_flags_str[(line-1)*72:line*72]
-       tempstr = tempstr + ' '*(72-len(tempstr))
-       modtext = modtext + """, &
-    &     '%s'""" % (tempstr)
-    modtext = modtext + """ ]
-
-  !> The date when this executable was built.
-  character(len=10), parameter :: tem_build_date &
-    &                            = '%s'
-end module tem_revision_module
-""" % (builddate)
-
-    revmod.write(modtext)
-    revmod.sig = Utils.h_file(revmod.abspath())
+    ### Setup the soi_revision_module ###
+    bld( rule = revision_module_file,
+         always = True,
+         target = bld.path.find_or_declare('source/soi_revision_module.f90')
+    )
     ### End setup tem_revision_module ###
 
     ccmod = bld.path.find_or_declare('source/tem_compileconf_module.f90')
@@ -598,6 +515,7 @@ end module tem_compileconf_module
     fnlib_sources = bld.path.ant_glob('external/fnlib/*.f')
 
     tem_sources = bld.path.ant_glob('source/*.f90')
+    tem_sources.append('source/soi_revision_module.f90')
     tem_sources += bld.path.ant_glob('source/control/*.f90')
     tem_sources += bld.path.ant_glob('source/faces/*.f90')
     tem_sources += bld.path.ant_glob('source/variables/*.f90')
@@ -605,7 +523,7 @@ end module tem_compileconf_module
     tem_sources += bld.path.ant_glob('source/libharvesting/*.f90',
                                      excl=['source/libharvesting/hvs_vtk_dummy.f90',
                                      'source/libharvesting/hvs_vtk_module.f90'])
-    tem_sources += bld.env.sizeof_source                                 
+    tem_sources += bld.env.sizeof_source
     tem_sources.append('source/space_time_functions/tem_polygon_material_module.f90')
     tem_sources += bld.path.ant_glob('external/stla_io.f90')
 
@@ -623,7 +541,6 @@ end module tem_compileconf_module
     tem_sources += bld.env.mpi_mem_f_sources
     tem_sources += bld.env.sparse_a2a_sources
 
-    tem_sources.append(revmod)
     tem_sources.append(ccmod)
     tem_sources.append(bld.env['isNaN_source'])
     if bld.env['gamma_source'] == 'f2008':
@@ -661,9 +578,7 @@ end module tem_compileconf_module
       tem_sources.append('source/libharvesting/hvs_base64_module.fpp')
 
 
-    if bld.cmd != 'gendoxy':
-      bld.recurse('aotus')
-
+    if bld.cmd != 'docu':
       bld.env.mpi_mem_c_obj = 'mem_for_mpi.o'
       if bld.env.mpi_mem_c_sources != '':
         bld.env.mpi_mem_c_obj = ''
@@ -676,7 +591,7 @@ end module tem_compileconf_module
              source = 'external/dist_check/distcrc.c',
              target = bld.env.distcrc )
 
-      if not bld.options.no_vtk: 
+      if not bld.options.no_vtk:
         bld(
             features = 'c',
             source   = 'external/base64/Base64EncodeDecode.c',
@@ -703,7 +618,7 @@ end module tem_compileconf_module
         target   = 'tem_objs')
 
       utest_sources = bld.path.ant_glob('utests/*_module.f90')
-      test_deps = ['lapack_objs', 'tem_utest_objs', 'aotus', 'tem_objs', 
+      test_deps = ['lapack_objs', 'tem_utest_objs', 'aotus', 'tem_objs',
                    bld.env.mpi_mem_c_obj,
                    #bld.env.distcrc,
                    'PRECICE', 'MPICXX', 'PYLIB', 'STDCXX', 'ZLIB']
@@ -724,81 +639,36 @@ end module tem_compileconf_module
         use      = test_deps,
         target   = 'iar_bench')
 
-      utests(bld, test_deps, coco=True)
+      utests(bld, test_deps, preprocessor='coco')
 
     else:
-      bld(
-        features = 'coco',
+      import os
+      from waflib.extras.make_fordoc import gendoc
+
+      tpp = bld(
+        features = 'includes coco',
         source   = tem_ppsources)
-      bld.ford_mainfile = 'tem_mainpage.md'
-      post_doxy(bld)
 
-def post_doxy(bld):
-    find_solver_revision(bld)
-    bld.add_post_fun(gendoxy)
+      tpp.post()
+      tem_preprocessed = []
+      for ppt in tpp.tasks:
+        for f in ppt.outputs:
+          tem_preprocessed.append(f)
 
-def gendoxy(bld):
-     ec = bld.exec_command( ['ford', '-r', bld.env.solver_rev,
-                               bld.env.ford_mainpage],
-                               shell=False, cwd=bld.top_dir      )
-     if ec != 0:
-         raise RuntimeError('FORD failed to run properly!')
-     return ec
+      if not bld.env.fordonline:
+        tem_preprocessed.append(bld.env.fordext_aotus)
 
-def find_solver_revision(bld):
-    try:
-       import subprocess # If subprocess is available and provides check_output
-       # This is working with Python > 2.7.
-       # The check on check_output is necessary, because 2.6 provides subprocess
-       # put without check_output.
-       if getattr(subprocess, 'check_output'):
-         use_subproc = True
-       else:
-         use_subproc = False
-    except:
-       import commands
-       use_subproc = False
+      tgt = bld.path.get_bld().make_node('docu/modules.json')
+      bld.env.fordext_tem = tgt
 
-    if bld.env.revision_string:
-      solver_rev = bld.env.revision_string
-    else:
-      solver_rev = 'UNKNOWN'
+      bld( rule = gendoc,
+           source = tem_preprocessed,
+           target = tgt,
+           extern = [bld.env.fordext_aotus],
+           extern_urls = [bld.env.fordurl_aotus],
+           mainpage = os.path.join(bld.top_dir, 'tem', 'tem_mainpage.md')
+      )
 
-    if bld.options.revision_string:
-      solver_rev = bld.options.revision_string
-
-    if solver_rev == 'UNKNOWN':
-      if use_subproc:
-         try:
-            hg_stat = 0
-            hg_out = subprocess.check_output(['hg', 'id', '-i'])
-         except subprocess.CalledProcessError as e:
-            hg_stat = e.returncode
-            hg_out = e.output
-         except OSError:
-            hg_stat = 1
-      else:
-         (hg_stat, hg_out) = commands.getstatusoutput('hg id -i')
-
-      if hg_stat == 0:
-          if sys.version_info[0] > 2:
-             solver_rev = hg_out.split()[-1].decode('ascii')
-          else:
-             solver_rev = hg_out.split()[-1]
-      else:
-          # There is no hg, or hg did not find a proper revision.
-          # Try to use the node information from .hg_archival.
-          import os
-          if os.path.isfile('.hg_archival.txt'):
-             import re
-             arfile = open('.hg_archival.txt', 'r')
-             hgnodeline = re.compile('^node:')
-             for line in arfile:
-                if hgnodeline.match(line):
-                   solver_rev = line[6:18]
-                   break
-             arfile.close()
-    bld.env['solver_rev'] = solver_rev
 
 from waflib.Build import BuildContext
 class debug(BuildContext):
@@ -811,12 +681,6 @@ class test(BuildContext):
     cmd = 'test'
     variant = 'debug'
 
-class ford(BuildContext):
-   "Build FORD documentation"
-   cmd = 'gendoxy'
-   variant = 'ford'
-   fun = 'build'
-
 class profile(BuildContext):
     "Build a profile executable"
     cmd = 'profile'
@@ -826,17 +690,17 @@ class scalasca(BuildContext):
     "Build a scalasca instrumented executable"
     cmd = 'scalasca'
     variant = 'scalasca'
- 
+
 class scorep(BuildContext):
     "Build a scorep instrumented executable"
     cmd = 'scorep'
     variant = 'scorep'
-#todo# 
+#todo#
 #todo# class vampir(BuildContext):
 #todo#     "Build a vampir instrumented executable"
 #todo#     cmd = 'vampir'
 #todo#     variant = 'vampir'
-#todo# 
+#todo#
 #todo# class tau(BuildContext):
 #todo#     "Build a tau instrumented executable"
 #todo#     cmd = 'tau'
