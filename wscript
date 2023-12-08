@@ -663,9 +663,10 @@ end module tem_compileconf_module
 
       bld( rule = gendoc,
            source = tem_preprocessed,
+           src_paths = [bld.path.find_node('source').abspath()],
            target = tgt,
-           extern = [bld.env.fordext_aotus],
-           extern_urls = [bld.env.fordurl_aotus],
+           extern = ['aoturl = {0}'.format(bld.env.fordext_aotus)],
+           extern_urls = ['aoturl = {0}'.format(bld.env.fordurl_aotus)],
            mainpage = os.path.join(bld.top_dir, 'tem', 'tem_mainpage.md')
       )
 
