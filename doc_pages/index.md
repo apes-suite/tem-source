@@ -10,8 +10,8 @@ In the build script, the Fortran preprocessing tool CoCo is included, which is
 released under the [GPL](http://www.opensource.org/licenses/gpl-2.0.php) version 2.
 The CoCo source is also available in `external/coco.f90`.
 
-TreElM is part of the APES suite and questions might be raised on the
-[Apes mailing list](https://listserv.uni-siegen.de/cgi-bin/mailman/listinfo/apes).
+TreElM is part of the APES-suite and questions might be raised in the
+[organization conversations on github](https://github.com/orgs/apes-suite/discussions).
 
 
 Basic Features
@@ -31,11 +31,11 @@ Basic Features
 How To Build
 ------------
 
-[waf](http://code.google.com/p/waf/) is used as a build system.
+[waf](https://waf.io/) is used as a build system.
 Run:
 
 ```bash
-./waf configure build
+bin/waf configure build
 ```
 
 to build the treelm library.
@@ -44,7 +44,7 @@ If you want to select a specific Fortran compiler, set the environment variable
 *FC* should point to a MPI wrapper provided by the MPI library.
 To adapt the build further have a look at the wscript.
 
-For your convenience, the [aotus](https://apes.osdn.io/pages/aotus.html) library
+For your convenience, the [aotus](https://github.com/apes-suite/aotus) library
 is included and built along.
 It is used for the header description files of the mesh as well as for
 configuration options.

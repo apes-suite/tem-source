@@ -1,6 +1,7 @@
 project: Treelm
 summary: Tree based Elemental Mesh
-project_website: https://apes.osdn.io/pages/treelm
+project_website: https://geb.inf.tu-dresden.de/apes-suite/pages/treelm.html
+project_github: https://github.com/apes-suite/tem-source.git
 src_dir: source
 src_dir: utests
 src_dir: build/ford
