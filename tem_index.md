@@ -20,7 +20,7 @@ Included Software
 
 Note, that this library includes some other software parts to your convenience.
 
-- [Aotus](https://apes.osdn.io/pages/aotus.html) is used for configuration and
+- [Aotus](https://github.com/apes-suite/aotus) is used for configuration and
   header files. It is released under the terms of the MIT License as the
   [Lua library](http://www.lua.org), that it includes.
 - [Waf](https://waf.io) is used as the build system and is released
