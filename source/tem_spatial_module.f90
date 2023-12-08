@@ -59,7 +59,7 @@
 !! - 'crvpy' [[tem_ic_predefs_module:load_ic_2dcrvp]]
 !! - 'crvppressure' [[tem_ic_predefs_module:load_ic_2dcrvp]]
 !! - 'cylindricalwave' [[tem_cylindricalWave_module]]
-!! - 'gausspulse' [[tem_ic_predefs_module:load_spatial_gausspulse]]
+!! - 'gausspulse' [[tem_ic_predefs_module:load_ic_gausspulse]]
 !! - 'heaviside_gibbs'
 !!   [[tem_heaviside_gibbs_fun_module:tem_load_heaviside_gibbs]]
 !! - 'miescatter_magneticfieldx' [[tem_miescatter_module:tem_load_miescatter]]
