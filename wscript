@@ -75,6 +75,7 @@ def configure(conf):
 
     conf.setenv('')
     conf.env.ford_mainpage = 'tem_mainpage.md'
+    conf.env.fordurl_tem = 'https://geb.inf.tu-dresden.de/doxy/treelm/'
     conf.env.distcrc = ''
 
     conf.setenv('cenv')
