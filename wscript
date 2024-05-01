@@ -369,6 +369,8 @@ def set_variant_flags(conf):
     # * 'double': promote default reals to double precision
     # * 'openmp': enable OpenMP
 
+    conf.env.fordurl_tem = 'https://geb.inf.tu-dresden.de/doxy/treelm/'
+
     omp_flags = fcopts[conf.env.FC_NAME, 'noomp']
     conf.env.flag_fixform = fcopts[conf.env.FC_NAME, 'fixform']
     if conf.options.openmp:
