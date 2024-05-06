@@ -780,7 +780,15 @@ contains
     end if
 
     if (triggered) then
-      me%trigger = max(me%trigger + me%interval, now)
+      if (tem_time_gt_trigger(me%max, me%trigger)) then
+        me%trigger = max(me%trigger + me%interval, now)
+        if (tem_time_gt_trigger(me%trigger, me%max)) then
+          me%trigger = max(me%max, now)
+        end if
+      else
+        ! Beyond the tracking window, never trigger again
+        me%trigger = tem_time_never()
+      end if
     end if
 
   end subroutine tem_timeControl_update
