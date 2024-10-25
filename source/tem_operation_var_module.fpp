@@ -272,9 +272,9 @@ contains
       get_valOfindex => tem_multiplyScalTimesVec_fromIndex
 
     case( 'division', 'div' )
-      get_point => division_forPoint
-      get_element => division_forElement
-      get_valOfindex => division_fromIndex
+      get_point => tem_division_forPoint
+      get_element => tem_division_forElement
+      get_valOfindex => tem_division_fromIndex
 
     case( 'divide_vector_by_scalar' )
       get_point => tem_divideVecByScal_forPoint
@@ -2055,8 +2055,8 @@ contains
   !! The interface has to comply to the abstract interface
   !! tem_varSys_module#tem_varSys_proc_element.
   !!
-  recursive subroutine division_forElement( fun, varsys, elempos, time, tree, &
-    &                                       nElems, nDofs, res                )
+  recursive subroutine tem_division_forElement( fun, varsys, elempos, time,   &
+    &                                           tree, nElems, nDofs, res      )
     ! -------------------------------------------------------------------- !
     !> Description of the method to obtain the variables, here some preset
     !! values might be stored, like the space time function to use or the
@@ -2123,7 +2123,7 @@ contains
       end do
     end do
 
-  end subroutine division_forElement
+  end subroutine tem_division_forElement
   ! ***************************************************************************!
 
 
@@ -2133,8 +2133,8 @@ contains
   !!
   !! The interface has to comply to the abstract interface
   !! tem_varSys_module#tem_varSys_proc_point.
-  recursive subroutine division_forPoint( fun, varsys, point, time, tree, &
-    &                                     nPnts, res                      )
+  recursive subroutine tem_division_forPoint( fun, varsys, point, time,    &
+    &                                         tree, nPnts, res             )
     ! -------------------------------------------------------------------- !
     !> Description of the method to obtain the variables, here some preset
     !! values might be stored, like the space time function to use or the
@@ -2191,7 +2191,7 @@ contains
       end do
     end do
 
-  end subroutine division_forPoint
+  end subroutine tem_division_forPoint
   ! ***************************************************************************!
 
 
@@ -2201,8 +2201,8 @@ contains
   !!
   !! The interface has to comply to the abstract interface
   !! tem_varSys_module#tem_varSys_proc_getvalofindex.
-  recursive subroutine division_fromIndex( fun, varSys, time, iLevel, idx, &
-    &                                      idxLen, nVals, res              )
+  recursive subroutine tem_division_fromIndex( fun, varSys, time, iLevel,  &
+    &                                          idx, idxLen, nVals, res     )
     ! -------------------------------------------------------------------- !
     !> Description of the method to obtain the variables, here some preset
     !! values might be stored, like the space time function to use or the
@@ -2247,7 +2247,7 @@ contains
     ! get the nodal values for the 2 inputs
     !>TODO make it working for idxLen and contiguous access of index array
     call tem_varSys_check_inArgs( fun, varSys, time, iLevel, idx, idxLen, &
-      &    nVals, label = 'division_fromIndex'                            )
+      &    nVals, label = 'tem_division_fromIndex'                         )
 
     call varSys%method%val(fun%input_varPos(1))%get_valOfIndex( &
       & varSys  = varSys,                                       &
@@ -2275,7 +2275,7 @@ contains
       end do
     end do
 
-  end subroutine division_fromIndex
+  end subroutine tem_division_fromIndex
   ! ***************************************************************************!
 
 
