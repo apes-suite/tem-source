@@ -112,6 +112,12 @@ module tem_operation_var_module
   public :: tem_free_varSys_data_ptr
   public :: tem_evalMag_forPoint, tem_evalMag_forElement, tem_evalMag_fromIndex
   public :: tem_evalAdd_forPoint, tem_evalAdd_forElement, tem_evalAdd_fromIndex
+  public :: tem_evalDiff_forPoint, tem_evalDiff_forElement, &
+    &       tem_evalDiff_fromIndex
+  public :: tem_evalMultiply_forPoint, tem_evalMultiply_forElement, &
+    &       tem_evalMultiply_fromIndex
+  public :: tem_division_forPoint, tem_division_forElement, &
+    &       tem_division_fromIndex
   public :: tem_opVar_getParams, tem_opVar_setParams
 
   public :: tem_opVar_reduction_transient_init
@@ -241,9 +247,9 @@ contains
     ! magnitude, division, multiplication are solver specific
     ! so set using getEvalFuncionsCallback
     case( 'difference' )
-      get_element => evalDiff_forElement
-      get_point => evalDiff_forPoint
-      get_valOfIndex => evalDiff_fromIndex
+      get_element => tem_evalDiff_forElement
+      get_point => tem_evalDiff_forPoint
+      get_valOfIndex => tem_evalDiff_fromIndex
 
     case( 'rel_difference' )
       get_element => evalRelDiff_forElement
@@ -256,9 +262,9 @@ contains
       get_valOfIndex => tem_evalAdd_fromIndex
 
     case ('multiplication')
-      get_point => evalMultiply_forPoint
-      get_element => evalMultiply_forElement
-      get_valOfindex => evalMultiply_fromIndex
+      get_point => tem_evalMultiply_forPoint
+      get_element => tem_evalMultiply_forElement
+      get_valOfindex => tem_evalMultiply_fromIndex
 
     case( 'multiply_scalar_times_vector' )
       get_point => tem_multiplyScalTimesVec_forPoint
@@ -266,9 +272,9 @@ contains
       get_valOfindex => tem_multiplyScalTimesVec_fromIndex
 
     case( 'division', 'div' )
-      get_point => division_forPoint
-      get_element => division_forElement
-      get_valOfindex => division_fromIndex
+      get_point => tem_division_forPoint
+      get_element => tem_division_forElement
+      get_valOfindex => tem_division_fromIndex
 
     case( 'divide_vector_by_scalar' )
       get_point => tem_divideVecByScal_forPoint
@@ -795,8 +801,8 @@ contains
   !! The interface has to comply to the abstract interface
   !! tem_varSys_module#tem_varSys_proc_element.
   !!
-  recursive subroutine evalDiff_forElement( fun, varsys, elempos, time, tree, &
-    &                                       nElems, nDofs, res                )
+  recursive subroutine tem_evalDiff_forElement( fun, varsys, elempos, time,   &
+    &                                           tree, nElems, nDofs, res                )
     ! ---------------------------------------------------------------------- !
     !> Description of the method to obtain the variables, here some preset
     !! values might be stored, like the space time function to use or the
@@ -864,7 +870,7 @@ contains
 
     deallocate(input_varRes)
 
-  end subroutine evalDiff_forElement
+  end subroutine tem_evalDiff_forElement
   ! ************************************************************************** !
 
 
@@ -873,8 +879,8 @@ contains
   !!
   !! The interface has to comply to the abstract interface
   !! tem_varSys_module#tem_varSys_proc_point
-  recursive subroutine evalDiff_forPoint( fun, varsys, point, time, tree, &
-    &                                     nPnts, res                      )
+  recursive subroutine tem_evalDiff_forPoint( fun, varsys, point, time, tree, &
+    &                                         nPnts, res                      )
     ! ---------------------------------------------------------------------- !
     !> Description of the method to obtain the variables, here some preset
     !! values might be stored, like the space time function to use or the
@@ -934,7 +940,7 @@ contains
 
     deallocate(input_varRes)
 
-  end subroutine evalDiff_forPoint
+  end subroutine tem_evalDiff_forPoint
   ! ************************************************************************** !
 
 
@@ -944,8 +950,8 @@ contains
   !!
   !! The interface has to comply to the abstract interface
   !! tem_varSys_module#tem_varSys_proc_point
-  recursive subroutine evalDiff_fromIndex( fun, varSys, time, iLevel, idx, &
-    &                                      idxLen, nVals, res              )
+  recursive subroutine tem_evalDiff_fromIndex( fun, varSys, time, iLevel, idx, &
+    &                                          idxLen, nVals, res              )
     ! ---------------------------------------------------------------------- !
     !> Description of the method to obtain the variables, here some preset
     !! values might be stored, like the space time function to use or the
@@ -993,7 +999,7 @@ contains
 
     ! check if number of index are the same as number of values asked for
     call tem_varSys_check_inArgs( fun, varSys, time, iLevel, idx, idxLen, &
-      &    nVals, label = 'evalDiff_fromIndex'                            )
+      &    nVals, label = 'tem_evalDiff_fromIndex'                        )
 
     nTotal = nVals*fun%nComponents
     ! nInputs must be two
@@ -1019,7 +1025,7 @@ contains
 
     deallocate(input_varRes)
 
-  end subroutine evalDiff_fromIndex
+  end subroutine tem_evalDiff_fromIndex
   ! ************************************************************************** !
 
 
@@ -1790,8 +1796,9 @@ contains
   !! The interface has to comply to the abstract interface
   !! tem_varSys_module#tem_varSys_proc_element.
   !!
-  recursive subroutine evalMultiply_forElement( fun, varsys, elempos, time, &
-    &                                           tree, nElems, nDofs, res    )
+  recursive subroutine tem_evalMultiply_forElement( fun, varsys, elempos,    &
+    &                                               time, tree, nElems,      &
+    &                                               nDofs, res               )
     ! ---------------------------------------------------------------------- !
     !> Description of the method to obtain the variables, here some preset
     !! values might be stored, like the space time function to use or the
@@ -1866,18 +1873,18 @@ contains
 
     deallocate(input_varRes)
 
-  end subroutine evalMultiply_forElement
+  end subroutine tem_evalMultiply_forElement
   ! ************************************************************************** !
 
 
   ! ************************************************************************** !
-  !> Same as evalMultiply_forElement except it evaluate it multiply values
+  !> Same as tem_evalMultiply_forElement except it evaluate it multiply values
   !! from points
   !!
   !! The interface has to comply to the abstract interface
   !! tem_varSys_module#tem_varSys_proc_point.
-  recursive subroutine evalMultiply_forPoint( fun, varsys, point, time, tree, &
-    &                                         nPnts, res                      )
+  recursive subroutine tem_evalMultiply_forPoint( fun, varsys, point, time,   &
+    &                                             tree, nPnts, res            )
     ! ---------------------------------------------------------------------- !
     !> Description of the method to obtain the variables, here some preset
     !! values might be stored, like the space time function to use or the
@@ -1935,18 +1942,18 @@ contains
 
     deallocate(input_varRes)
 
-  end subroutine evalMultiply_forPoint
+  end subroutine tem_evalMultiply_forPoint
   ! ************************************************************************** !
 
 
   ! ************************************************************************** !
-  !> Same as evalMultiply_forPoint except it multiply values from points via
+  !> Same as tem_evalMultiply_forPoint except it multiply values from points via
   !! indices which are setup before
   !!
   !! The interface has to comply to the abstract interface
   !! tem_varSys_module#tem_varSys_proc_getvalofindex.
-  recursive subroutine evalMultiply_fromIndex( fun, varSys, time, iLevel, idx, &
-    &                                          idxLen, nVals, res              )
+  recursive subroutine tem_evalMultiply_fromIndex( fun, varSys, time, iLevel,  &
+    &                                              idx, idxLen, nVals, res     )
     ! ---------------------------------------------------------------------- !
     !> Description of the method to obtain the variables, here some preset
     !! values might be stored, like the space time function to use or the
@@ -1991,7 +1998,7 @@ contains
     call C_F_POINTER( fun%method_Data, opData )
 
     call tem_varSys_check_inArgs( fun, varSys, time, iLevel, idx, idxLen, &
-      &    nVals, label = 'evalMultiply_fromIndex'                        )
+      &    nVals, label = 'tem_evalMultiply_fromIndex'                    )
 
     nTotal = nVals*fun%nComponents
     allocate( input_varRes(nTotal) )
@@ -2018,7 +2025,7 @@ contains
 
     deallocate(input_varRes)
 
-  end subroutine evalMultiply_fromIndex
+  end subroutine tem_evalMultiply_fromIndex
   ! ************************************************************************** !
 
 
@@ -2048,8 +2055,8 @@ contains
   !! The interface has to comply to the abstract interface
   !! tem_varSys_module#tem_varSys_proc_element.
   !!
-  recursive subroutine division_forElement( fun, varsys, elempos, time, tree, &
-    &                                       nElems, nDofs, res                )
+  recursive subroutine tem_division_forElement( fun, varsys, elempos, time,   &
+    &                                           tree, nElems, nDofs, res      )
     ! -------------------------------------------------------------------- !
     !> Description of the method to obtain the variables, here some preset
     !! values might be stored, like the space time function to use or the
@@ -2116,7 +2123,7 @@ contains
       end do
     end do
 
-  end subroutine division_forElement
+  end subroutine tem_division_forElement
   ! ***************************************************************************!
 
 
@@ -2126,8 +2133,8 @@ contains
   !!
   !! The interface has to comply to the abstract interface
   !! tem_varSys_module#tem_varSys_proc_point.
-  recursive subroutine division_forPoint( fun, varsys, point, time, tree, &
-    &                                     nPnts, res                      )
+  recursive subroutine tem_division_forPoint( fun, varsys, point, time,    &
+    &                                         tree, nPnts, res             )
     ! -------------------------------------------------------------------- !
     !> Description of the method to obtain the variables, here some preset
     !! values might be stored, like the space time function to use or the
@@ -2184,7 +2191,7 @@ contains
       end do
     end do
 
-  end subroutine division_forPoint
+  end subroutine tem_division_forPoint
   ! ***************************************************************************!
 
 
@@ -2194,8 +2201,8 @@ contains
   !!
   !! The interface has to comply to the abstract interface
   !! tem_varSys_module#tem_varSys_proc_getvalofindex.
-  recursive subroutine division_fromIndex( fun, varSys, time, iLevel, idx, &
-    &                                      idxLen, nVals, res              )
+  recursive subroutine tem_division_fromIndex( fun, varSys, time, iLevel,  &
+    &                                          idx, idxLen, nVals, res     )
     ! -------------------------------------------------------------------- !
     !> Description of the method to obtain the variables, here some preset
     !! values might be stored, like the space time function to use or the
@@ -2240,7 +2247,7 @@ contains
     ! get the nodal values for the 2 inputs
     !>TODO make it working for idxLen and contiguous access of index array
     call tem_varSys_check_inArgs( fun, varSys, time, iLevel, idx, idxLen, &
-      &    nVals, label = 'division_fromIndex'                            )
+      &    nVals, label = 'tem_division_fromIndex'                         )
 
     call varSys%method%val(fun%input_varPos(1))%get_valOfIndex( &
       & varSys  = varSys,                                       &
@@ -2268,7 +2275,7 @@ contains
       end do
     end do
 
-  end subroutine division_fromIndex
+  end subroutine tem_division_fromIndex
   ! ***************************************************************************!
 
 
