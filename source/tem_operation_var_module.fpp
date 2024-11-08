@@ -112,11 +112,11 @@ module tem_operation_var_module
   public :: tem_free_varSys_data_ptr
   public :: tem_evalMag_forPoint, tem_evalMag_forElement, tem_evalMag_fromIndex
   public :: tem_evalAdd_forPoint, tem_evalAdd_forElement, tem_evalAdd_fromIndex
-  public :: tem_evalDiff_forPoint, tem_evalDiff_forElement,                   &
+  public :: tem_evalDiff_forPoint, tem_evalDiff_forElement, &
     &       tem_evalDiff_fromIndex
-  public :: tem_evalMultiply_forPoint, tem_evalMultiply_forElement,           &
+  public :: tem_evalMultiply_forPoint, tem_evalMultiply_forElement, &
     &       tem_evalMultiply_fromIndex
-  public :: tem_division_forPoint, tem_division_forElement,                   &
+  public :: tem_division_forPoint, tem_division_forElement, &
     &       tem_division_fromIndex
   public :: tem_opVar_getParams, tem_opVar_setParams
 
