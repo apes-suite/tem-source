@@ -1,6 +1,6 @@
 project: Treelm
 summary: Tree based Elemental Mesh
-project_website: https://geb.inf.tu-dresden.de/apes-suite/pages/treelm.html
+project_website: https://apes-suite.github.io/pages/treelm.html
 project_github: https://github.com/apes-suite/tem-source.git
 src_dir: source
 src_dir: utests
@@ -10,7 +10,7 @@ exclude: tem_gamma_NAG.f90
 exclude: tem_gamma_SLATEC.f90
 exclude: tem_isNaN_vendor.f90
 exclude: tem_isNaN_dummy.f90
-external: aoturl = https://geb.inf.tu-dresden.de/doxy/aotus
+external: aoturl = https://apes-suite.github.io/aotus
 page_dir: doc_pages
 media_dir: media
 output_dir: docu
