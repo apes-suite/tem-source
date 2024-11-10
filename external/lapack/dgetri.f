@@ -154,7 +154,7 @@
 *     Test the input parameters.
 *
       INFO = 0
-      NB = ILAENV( 1, 'DGETRI', ' ', N, -1, -1, -1 )
+      NB = ILAENV( 1, 'DGETRI', N, -1, -1, -1 )
       LWKOPT = N*NB
       WORK( 1 ) = LWKOPT
       LQUERY = ( LWORK.EQ.-1 )
@@ -190,7 +190,7 @@
          IWS = MAX( LDWORK*NB, 1 )
          IF( LWORK.LT.IWS ) THEN
             NB = LWORK / LDWORK
-            NBMIN = MAX( 2, ILAENV( 2, 'DGETRI', ' ', N, -1, -1, -1 ) )
+            NBMIN = MAX( 2, ILAENV( 2, 'DGETRI', N, -1, -1, -1 ) )
          END IF
       ELSE
          IWS = N

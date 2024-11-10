@@ -18,11 +18,10 @@
 *  Definition:
 *  ===========
 *
-*       INTEGER FUNCTION IPARMQ( ISPEC, NAME, OPTS, N, ILO, IHI, LWORK )
+*       INTEGER FUNCTION IPARMQ( ISPEC, ILO, IHI )
 * 
 *       .. Scalar Arguments ..
-*       INTEGER            IHI, ILO, ISPEC, LWORK, N
-*       CHARACTER          NAME*( * ), OPTS*( * )
+*       INTEGER            IHI, ILO, ISPEC, LWORK
 *  
 *
 *> \par Purpose:
@@ -94,25 +93,6 @@
 *>                        arithmetic work implied by the latter choice.)
 *> \endverbatim
 *>
-*> \param[in] NAME
-*> \verbatim
-*>          NAME is character string
-*>               Name of the calling subroutine
-*> \endverbatim
-*>
-*> \param[in] OPTS
-*> \verbatim
-*>          OPTS is character string
-*>               This is a concatenation of the string arguments to
-*>               TTQRE.
-*> \endverbatim
-*>
-*> \param[in] N
-*> \verbatim
-*>          N is integer scalar
-*>               N is the order of the Hessenberg matrix H.
-*> \endverbatim
-*>
 *> \param[in] ILO
 *> \verbatim
 *>          ILO is INTEGER
@@ -125,12 +105,6 @@
 *>               in rows and columns 1:ILO-1 and IHI+1:N.
 *> \endverbatim
 *>
-*> \param[in] LWORK
-*> \verbatim
-*>          LWORK is integer scalar
-*>               The amount of workspace available.
-*> \endverbatim
-*
 *  Authors:
 *  ========
 *
@@ -212,7 +186,7 @@
 *> \endverbatim
 *>
 *  =====================================================================
-      INTEGER FUNCTION IPARMQ( ISPEC, NAME, OPTS, N, ILO, IHI, LWORK )
+      INTEGER FUNCTION IPARMQ( ISPEC, ILO, IHI )
 *
 *  -- LAPACK auxiliary routine (version 3.4.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -220,8 +194,7 @@
 *     November 2011
 *
 *     .. Scalar Arguments ..
-      INTEGER            IHI, ILO, ISPEC, LWORK, N
-      CHARACTER          NAME*( * ), OPTS*( * )
+      INTEGER            IHI, ILO, ISPEC
 *
 *  ================================================================
 *     .. Parameters ..

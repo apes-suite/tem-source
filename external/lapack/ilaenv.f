@@ -18,10 +18,10 @@
 *  Definition:
 *  ===========
 *
-*       INTEGER FUNCTION ILAENV( ISPEC, NAME, OPTS, N1, N2, N3, N4 )
+*       INTEGER FUNCTION ILAENV( ISPEC, NAME, N1, N2, N3, N4 )
 * 
 *       .. Scalar Arguments ..
-*       CHARACTER*( * )    NAME, OPTS
+*       CHARACTER*( * )    NAME
 *       INTEGER            ISPEC, N1, N2, N3, N4
 *       ..
 *  
@@ -93,15 +93,6 @@
 *>          lower case.
 *> \endverbatim
 *>
-*> \param[in] OPTS
-*> \verbatim
-*>          OPTS is CHARACTER*(*)
-*>          The character options to the subroutine NAME, concatenated
-*>          into a single character string.  For example, UPLO = 'U',
-*>          TRANS = 'T', and DIAG = 'N' for a triangular routine would
-*>          be specified as OPTS = 'UTN'.
-*> \endverbatim
-*>
 *> \param[in] N1
 *> \verbatim
 *>          N1 is INTEGER
@@ -143,24 +134,20 @@
 *>
 *>  The following conventions have been used when calling ILAENV from the
 *>  LAPACK routines:
-*>  1)  OPTS is a concatenation of all of the character options to
-*>      subroutine NAME, in the same order that they appear in the
-*>      argument list for NAME, even if they are not used in determining
-*>      the value of the parameter specified by ISPEC.
-*>  2)  The problem dimensions N1, N2, N3, N4 are specified in the order
+*>  1)  The problem dimensions N1, N2, N3, N4 are specified in the order
 *>      that they appear in the argument list for NAME.  N1 is used
 *>      first, N2 second, and so on, and unused problem dimensions are
 *>      passed a value of -1.
-*>  3)  The parameter value returned by ILAENV is checked for validity in
+*>  2)  The parameter value returned by ILAENV is checked for validity in
 *>      the calling subroutine.  For example, ILAENV is used to retrieve
 *>      the optimal blocksize for STRTRI as follows:
 *>
-*>      NB = ILAENV( 1, 'STRTRI', UPLO // DIAG, N, -1, -1, -1 )
+*>      NB = ILAENV( 1, 'STRTRI', N, -1, -1, -1 )
 *>      IF( NB.LE.1 ) NB = MAX( 1, N )
 *> \endverbatim
 *>
 *  =====================================================================
-      INTEGER FUNCTION ILAENV( ISPEC, NAME, OPTS, N1, N2, N3, N4 )
+      INTEGER FUNCTION ILAENV( ISPEC, NAME, N1, N2, N3, N4 )
 *
 *  -- LAPACK auxiliary routine (version 3.4.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -168,7 +155,7 @@
 *     November 2011
 *
 *     .. Scalar Arguments ..
-      CHARACTER*( * )    NAME, OPTS
+      CHARACTER*( * )    NAME
       INTEGER            ISPEC, N1, N2, N3, N4
 *     ..
 *
@@ -188,8 +175,30 @@
 *     ..
 *     .. Executable Statements ..
 *
-      GO TO ( 10, 10, 10, 80, 90, 100, 110, 120,
-     $        130, 140, 150, 160, 160, 160, 160, 160 )ISPEC
+      SELECT CASE(ISPEC)
+      CASE (1:3)
+        GO TO 10
+      CASE(4)
+        GO TO 80
+      CASE(5)
+        GO TO 90
+      CASE(6)
+        GO TO 100
+      CASE(7)
+        GO TO 110
+      CASE(8)
+        GO TO 120
+      CASE(9)
+        GO TO 130
+      CASE(10)
+        GO TO 140
+      CASE(11)
+        GO TO 150
+      CASE(12:16)
+        GO TO 160
+      END SELECT
+*      GO TO (10, 10, 10, 80, 90, 100, 110, 120,
+*     $        130, 140, 150, 160, 160, 160, 160, 160)ISPEC
 *
 *     Invalid value for ISPEC
 *
@@ -257,7 +266,15 @@
       C3 = SUBNAM( 4: 6 )
       C4 = C3( 2: 3 )
 *
-      GO TO ( 50, 60, 70 )ISPEC
+*      GO TO ( 50, 60, 70 )ISPEC
+      SELECT CASE(ISPEC)
+      CASE (1)
+         GO TO 50
+      CASE (2)
+         GO TO 60
+      CASE (3)
+         GO TO 70
+      END SELECT
 *
    50 CONTINUE
 *
@@ -616,7 +633,7 @@
 *
 *     12 <= ISPEC <= 16: xHSEQR or one of its subroutines. 
 *
-      ILAENV = IPARMQ( ISPEC, NAME, OPTS, N1, N2, N3, N4 )
+      ILAENV = IPARMQ( ISPEC, N2, N3 )
       RETURN
 *
 *     End of ILAENV
