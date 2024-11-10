@@ -165,7 +165,7 @@
 *
 *     Determine the block size for this environment.
 *
-      NB = ILAENV( 1, 'DGETRF', ' ', M, N, -1, -1 )
+      NB = ILAENV( 1, 'DGETRF', M, N, -1, -1 )
       IF( NB.LE.1 .OR. NB.GE.MIN( M, N ) ) THEN
 *
 *        Use unblocked code.
