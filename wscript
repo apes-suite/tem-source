@@ -22,8 +22,6 @@ def options(opt):
                    help='Build with OpenMP support')
     opt.add_option('--mic', action='store_true', default=False,
                    help='Build for Intels MIC architecture')
-    opt.add_option('--coco_reports', action='store_true', default=False,
-                   help='Activate output of CoCo reports')
     opt.add_option('--vlen', action='store',
                    help='Vector length to use')
     opt.add_option('--revision_string', action='store',
@@ -461,7 +459,7 @@ def set_variant_flags(conf):
 
 
 def build(bld):
-    from revision_module import revision_module_file
+    import revision_module
     from waflib.extras.utest_results import utests
     from waflib import Logs
     import sys
@@ -484,11 +482,9 @@ def build(bld):
         import waflib.extras.print_commands
 
     ### Setup the soi_revision_module ###
-    bld( rule = revision_module_file,
-         always = True,
-         target = bld.path.find_or_declare('source/soi_revision_module.f90')
-    )
-    ### End setup tem_revision_module ###
+    bld( features = "revmod fc",
+         target = "rev_module" )
+    ### End setup soi_revision_module ###
 
     ccmod = bld.path.find_or_declare('source/tem_compileconf_module.f90')
     modtext = """!> TreElm module for holding compile time configurations.
@@ -507,8 +503,6 @@ end module tem_compileconf_module
     ccmod.write(modtext)
     ccmod.sig = Utils.h_file(ccmod.abspath())
 
-    bld.add_group()
-
     tem_ppsources = bld.path.ant_glob('source/*.fpp')
     tem_ppsources += bld.path.ant_glob('source/variables/*.fpp')
     tem_ppsources += bld.path.ant_glob('source/shapes/*.fpp')
@@ -518,7 +512,6 @@ end module tem_compileconf_module
     fnlib_sources = bld.path.ant_glob('external/fnlib/*.f')
 
     tem_sources = bld.path.ant_glob('source/*.f90')
-    tem_sources.append('source/soi_revision_module.f90')
     tem_sources += bld.path.ant_glob('source/control/*.f90')
     tem_sources += bld.path.ant_glob('source/faces/*.f90')
     tem_sources += bld.path.ant_glob('source/variables/*.f90')
@@ -540,7 +533,6 @@ end module tem_compileconf_module
 
     tem_sources.append('source/space_time_functions/tem_acoustic_pulse_module.f90')
 
-    tem_sources += tem_ppsources
     tem_sources += bld.env.mpi_mem_f_sources
     tem_sources += bld.env.sparse_a2a_sources
 
@@ -577,8 +569,9 @@ end module tem_compileconf_module
       tem_sources += bld.path.ant_glob('source/libharvesting/hvs_vtk_dummy.f90')
     else:
       tem_sources += bld.path.ant_glob('source/libharvesting/hvs_vtk_module.f90')
-      tem_ppsources.append('source/libharvesting/hvs_base64_module.fpp')
-      tem_sources.append('source/libharvesting/hvs_base64_module.fpp')
+      tem_ppsources.append(bld.path.find_node('source/libharvesting/hvs_base64_module.fpp'))
+
+    tem_sources += tem_ppsources
 
 
     if bld.cmd != 'docu':
@@ -617,29 +610,30 @@ end module tem_compileconf_module
       bld(
         features = 'coco fc',
         source   = tem_sources,
-        use      = ['blas_objs', 'lapack_objs', 'NAG', 'base64'],
+        use      = ['blas_objs', 'rev_module', 'lapack_objs', 'aotus', 'NAG', 'base64'],
         target   = 'tem_objs')
 
       utest_sources = bld.path.ant_glob('utests/*_module.f90')
-      test_deps = ['lapack_objs', 'tem_utest_objs', 'aotus', 'tem_objs',
-                   bld.env.mpi_mem_c_obj,
-                   #bld.env.distcrc,
-                   'PRECICE', 'MPICXX', 'PYLIB', 'STDCXX', 'ZLIB']
+      lib_deps = ['lapack_objs', 'rev_module', 'aotus', 'tem_objs',
+                  bld.env.mpi_mem_c_obj,
+                  bld.env.distcrc,
+                  'PRECICE', 'MPICXX', 'PYLIB', 'STDCXX', 'ZLIB']
       bld(
         features = 'fc',
         source   = utest_sources,
         target   = 'tem_utest_objs')
+      test_deps = lib_deps + ['tem_utest_objs']
 
       bld(
         features = 'fc fcprogram',
         source   = 'peons/treelmesh_connectivity.f90',
-        use      = test_deps,
+        use      = lib_deps,
         target   = 'treelmesh_connectivity')
 
       bld(
         features = 'fc fcprogram',
         source   = 'peons/iar_bench.f90',
-        use      = test_deps,
+        use      = lib_deps,
         target   = 'iar_bench')
 
       utests(bld, test_deps, preprocessor='coco')
