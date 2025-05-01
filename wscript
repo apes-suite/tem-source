@@ -15,6 +15,8 @@ def options(opt):
     '''Building options provided by the treelm library.
        Remember, all options can be displayed with waf --help.'''
 
+    opt.load('coco')
+
     # General options
     opt.add_option('--nowarn', action='store_true', default=False,
                    help='Do not show compiler warnings.')
@@ -70,6 +72,7 @@ def configure(conf):
     from waflib import Logs
 
     conf.load('revision_module')
+    conf.load('coco')
 
     conf.setenv('')
     conf.env.ford_mainpage = 'tem_mainpage.md'
@@ -463,6 +466,8 @@ def build(bld):
     from waflib.extras.utest_results import utests
     from waflib import Logs
     import sys
+
+    bld.load('coco')
 
     try:
        import subprocess # If subprocess is available and provides check_output
