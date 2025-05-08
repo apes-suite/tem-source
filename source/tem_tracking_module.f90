@@ -267,7 +267,7 @@ module tem_tracking_module
 
     !> Pointer to config array in tem_tracking_type
     integer :: pntConfig
-    
+
   end type tem_tracking_instance_type
 
   type tem_tracking_type
@@ -839,16 +839,11 @@ module tem_tracking_module
     type(tem_simControl_type),  intent(in) :: simControl
     logical :: triggered
 
-    logical :: tc_triggered
-
     call tem_timeControl_check( me        = timeControl,    &
       &                         now       = simControl%now, &
       &                         comm      = proc%comm,      &
-      &                         triggered = tc_triggered    )
+      &                         triggered = triggered       )
 
-    triggered = tc_triggered                                   &
-      &         .or. tem_status_run_end(simControl%status)     &
-      &         .or. tem_status_run_terminate(simControl%status)
   end function tem_tracking_has_triggered
   ! ------------------------------------------------------------------------ !
 
@@ -871,7 +866,7 @@ module tem_tracking_module
     ! -------------------------------------------------------------------- !
     integer :: iLog, iConfig
     ! -------------------------------------------------------------------- !
-    
+
     ! Run over all tracking objects
     do iLog = 1, track%control%nActive
       iConfig = track%instance(iLog)%pntConfig
@@ -886,11 +881,11 @@ module tem_tracking_module
       !   stop file is defined
       !   simulation is terminated abruptly
       !   simulation reaches the maximum simulation time
-      if ( tem_tracking_has_triggered(                           & 
+      if ( tem_tracking_has_triggered(                           &
         &    timeControl = track%config(iConfig)%timeControl,    &
         &    simControl  = simControl,                           &
         &    proc        = track%instance(iLog)%output_file%proc ) ) then
-        
+
         if( track%instance( iLog )%subTree%useGlobalMesh ) then
           ! Open the output files, this also generates the vertices for the
           ! mesh, and writes the mesh data to disk. Also writes header file
@@ -937,7 +932,7 @@ module tem_tracking_module
             &                    mesh     = tree,                             &
             &                    subTree  = track%instance(iLog)%subTree      )
         end if !Global mesh
-      
+
       end if  ! do tracking? interval, tmin, tmax check
     end do ! iLog
 
