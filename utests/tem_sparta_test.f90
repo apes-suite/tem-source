@@ -58,7 +58,7 @@ program tem_sparta_test
   integer(kind=long_k) :: offset
   type( tem_sparta_type ) :: sparta
 
-  call tem_start('TREELM unit test', 'utest', general)
+  call tem_start('TREELM unit test', general)
   comm = general%proc%comm
   myrank = general%proc%rank
   nprocs = general%proc%comm_size

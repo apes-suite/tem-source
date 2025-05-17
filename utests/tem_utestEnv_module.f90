@@ -67,7 +67,7 @@ contains
     !---------------------------------------------------------------------------
 
     ! Init the Treelm environment
-    call tem_start('TREELM unit test', 'utest', general)
+    call tem_start('TREELM unit test', general)
 
     print *, "Hello from loadenv"
     ! Open the configuration file

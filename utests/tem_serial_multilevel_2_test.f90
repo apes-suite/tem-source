@@ -64,7 +64,7 @@ contains
     type(tem_face_type),allocatable :: faces(:)
     type(flu_state) :: conf
 
-    call tem_start('TREELM unit test', 'utest', general)
+    call tem_start('TREELM unit test', general)
 
     ! Open the configuration file 
     call open_config_chunk(L = conf, chunk = trim(cubeconf))

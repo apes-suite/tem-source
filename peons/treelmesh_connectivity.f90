@@ -166,7 +166,7 @@ program treelmesh_connectivity
   type(tem_BC_prop_type) :: BC_property
   integer :: nNeighbors
 
-  call tem_start('connectivity', 'utest', general)
+  call tem_start('connectivity', general)
 
   write(logUnit(1),*)'ATTENTION: Does not work in parallel!'
 

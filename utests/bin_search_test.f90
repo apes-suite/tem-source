@@ -52,7 +52,7 @@ program bin_search_test
   write(*,*) 'on ', nVals, ' Values'
 
   ! Init the Treelm environment
-  call tem_start('TREELM unit test', 'utest', general)
+  call tem_start('TREELM unit test', general)
 
   call tem_addTimer( me          = timer,        &
     &                timerHandle = long_timing,  &
