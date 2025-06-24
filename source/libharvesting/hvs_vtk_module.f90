@@ -62,6 +62,7 @@ module hvs_vtk_module
   use tem_comm_env_module,     only: tem_comm_env_type
   use tem_logging_module,      only: logunit
   use tem_subtree_type_module, only: tem_subtree_type
+  use tem_timeformatter_module, only: tem_timeformatter_type
   use tem_time_module,         only: tem_time_type,      &
     &                                tem_time_sim_stamp, &
     &                                tem_time_iter_stamp
@@ -225,14 +226,14 @@ contains
   !! We always write unstructured meshes, so we also write the header for the
   !! unstructured mesh here already.
   !! The actual mesh data is then to be written by hvs_vtk_write_meshdata.
-  subroutine hvs_vtk_open(vtk_file, use_iter, proc, time)
+  subroutine hvs_vtk_open(vtk_file, timeform, proc, time)
     !> The file description to open.
     type(hvs_vtk_file_type), intent(inout) :: vtk_file
 
     !> User specified settings for the output
     ! type(hvs_vtk_config_type), intent(in) :: vtk_config
     !> Whether to use iteration as part of filename
-    logical, intent(in) :: use_iter
+    type(tem_timeformatter_type), intent(in) :: timeform
 
     !> Parallel environment to use for  the output.
     type(tem_comm_env_type), intent(in) :: proc
@@ -264,13 +265,8 @@ contains
 
     vtk_file%timestamp = ''
     if (present(time)) then
-      if ( use_iter ) then
-        write(vtk_file%timestamp, '(a)') &
-          & '_t' // trim(tem_time_iter_stamp(time))
-      else
-        write(vtk_file%timestamp, '(a)') &
-          & '_t' // trim(tem_time_sim_stamp(time))
-      end if
+      write(vtk_file%timestamp, '(a)') &
+        & '_t' // trim(timeform%stamp(time))
     end if
 
     write(filename,'(a)') trim(filename) // trim(vtk_file%timestamp) // '.vtu'
@@ -890,11 +886,12 @@ contains
   !!
   !! The caller has to provide the vrtx, which can be created with the
   !! tem_calc_vrtx_coord-routine.
-  subroutine hvs_dump_debug_array( proc, tree, time, vrtx, debug_data)
+  subroutine hvs_dump_debug_array( proc, tree, time, timeform, vrtx, debug_data)
     !---------------------------------------------------------------------------
     type(tem_comm_env_type), intent(in) :: proc
     type(treelmesh_type), intent(in) :: tree
     type(tem_time_type), intent(in) :: time
+    type(tem_timeformatter_type), intent(in) :: timeform
     type(tem_vrtx_type) :: vrtx
     real(kind=rk) :: debug_data(tree%nElems)
     !---------------------------------------------------------------------------
@@ -915,7 +912,7 @@ contains
 
 
     call hvs_vtk_open( vtk_file = vtk_file,   &
-      &                use_iter = .true.,     &
+      &                timeform = timeform,   &
       &                proc     = proc,       &
       &                time     = time        )
 

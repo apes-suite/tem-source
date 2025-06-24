@@ -897,8 +897,6 @@ module tem_tracking_module
           ! depends on output vis_kind
           call hvs_output_open(                                 &
             &    out_file = track%instance(iLog)%output_file,   &
-            &    use_iter = track%config(iConfig)%output_config &
-            &                    %vtk%iter_filename,            &
             &    mesh     = tree,                               &
             &    varSys   = varSys,                             &
             &    time     = simControl%now                      )
@@ -918,8 +916,6 @@ module tem_tracking_module
           ! depends on output vis_kind
           call hvs_output_open(                                 &
             &    out_file = track%instance(iLog)%output_file,   &
-            &    use_iter = track%config(iConfig)%output_config &
-            &                    %vtk%iter_filename,            &
             &    mesh     = tree,                               &
             &    varSys   = varSys,                             &
             &    subTree  = track%instance(iLog)%subTree,       &

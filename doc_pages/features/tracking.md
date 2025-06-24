@@ -52,6 +52,9 @@ Writes all participating elements to a treelm mesh and creates for each
 required time step a restart file. The output is done in `vtk` and `pvd` files
 that can be visualised with `Paraview`.
 
+It is also possible to configure the format for the timestamp to be
+used in the filenames, see [[tem_timeformatter_load]].
+
 This is a scalable tracking object which works regardless of number of 
 processes.
 

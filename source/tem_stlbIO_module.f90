@@ -219,7 +219,7 @@ contains
     ! error variable
     integer :: iError
     ! timestamp for the filename
-    character(len=12) :: timeStamp
+    character(len=labelLen) :: timeStamp
     ! temporary min and max position for X,Y,Z coordinates in the linearized
     ! array of nodes
     integer :: minPos1, maxPos1, minPos2, maxPos2, minPos3, maxPos3

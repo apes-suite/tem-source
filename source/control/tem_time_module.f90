@@ -1,6 +1,6 @@
 ! Copyright (c) 2012-2013 Manuel Hasert <m.hasert@grs-sim.de>
 ! Copyright (c) 2012-2013 Simon Zimny <s.zimny@grs-sim.de>
-! Copyright (c) 2012-2014, 2017, 2019-2020 Harald Klimach <harald.klimach@uni-siegen.de>
+! Copyright (c) 2012-2014, 2017, 2019-2020, 2025 Harald Klimach <harald.klimach@dlr.de>
 ! Copyright (c) 2013-2014 Kartik Jain <kartik.jain@uni-siegen.de>
 ! Copyright (c) 2013-2014 Kannan Masilamani <kannan.masilamani@uni-siegen.de>
 ! Copyright (c) 2014, 2016 Peter Vitt <peter.vitt2@uni-siegen.de>
@@ -779,7 +779,7 @@ contains
     type(tem_time_type), intent(in) :: time
 
     !> String representation of the given simulation time.
-    character(len=12) :: timeStamp
+    character(len=labelLen) :: timeStamp
     ! -------------------------------------------------------------------- !
     ! -------------------------------------------------------------------- !
 
