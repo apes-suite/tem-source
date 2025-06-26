@@ -2,7 +2,7 @@
 ! Copyright (c) 2011 Konstantin Kleinheinz <k.kleinheinz@grs-sim.de>
 ! Copyright (c) 2011-2012, 2014 Jens Zudrop <j.zudrop@grs-sim.de>
 ! Copyright (c) 2011-2013 Manuel Hasert <m.hasert@grs-sim.de>
-! Copyright (c) 2011-2016,2020 Harald Klimach <harald.klimach@uni-siegen.de>
+! Copyright (c) 2011-2016, 2020, 2025 Harald Klimach <harald.klimach@dlr.de>
 ! Copyright (c) 2011 Gaurang Phadke <g.phadke@grs-sim.de>
 ! Copyright (c) 2011 Laura Didinger <l.didinger@grs-sim.de>
 ! Copyright (c) 2011 Jan Hueckelheim <j.hueckelheim@grs-sim.de>

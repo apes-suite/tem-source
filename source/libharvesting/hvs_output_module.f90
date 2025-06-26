@@ -1,7 +1,7 @@
 ! Copyright (c) 2015-2016 Kannan Masilamani <kannan.masilamani@uni-siegen.de>
 ! Copyright (c) 2015-2016 Jiaxing Qi <jiaxing.qi@uni-siegen.de>
 ! Copyright (c) 2016 Tobias Schneider <tobias1.schneider@student.uni-siegen.de>
-! Copyright (c) 2016, 2019 Harald Klimach <harald.klimach@uni-siegen.de>
+! Copyright (c) 2016, 2019, 2025 Harald Klimach <harald.klimach@dlr.de>
 ! Copyright (c) 2016 Nikhil Anand <nikhil.anand@uni-siegen.de>
 !
 ! Redistribution and use in source and binary forms, with or without

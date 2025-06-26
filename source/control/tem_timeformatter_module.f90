@@ -43,6 +43,7 @@ module tem_timeformatter_module
 
   public :: tem_timeformatter_type
   public :: tem_timeformatter_load
+  public :: tem_timeformatter_init
 
   character(len=8), parameter :: default_form = '(EN12.3)'
 
@@ -62,6 +63,35 @@ module tem_timeformatter_module
 
 
 contains
+
+
+  ! ************************************************************************ !
+  !> Reading a timeformatter description from a Lua script given by conf.
+  !!
+  !! Initializing a timeformatter
+  !! * timeform defines the formatting string to be used for the timestamp
+  !!   this defaults to `default_form`
+  !! * stamp defines the routine to use for the timestamp generation and
+  !!   defaults to `tem_timeformatter_sim_stamp`
+  function tem_timeformatter_init(timeform, stamp) result(formatter)
+    character(len=*), optional, intent(in) :: timeform
+    procedure(timestamp), optional :: stamp
+    type(tem_timeformatter_type) :: formatter
+
+    if (present(timeform)) then
+      formatter%timeform = timeform
+    else
+      formatter%timeform = default_form
+    end if
+
+    if (present(stamp)) then
+      formatter%stamp => stamp
+    else
+      formatter%stamp => tem_timeformatter_sim_stamp
+    end if
+
+  end function tem_timeformatter_init
+  ! ************************************************************************ !
 
 
   ! ************************************************************************ !
@@ -109,6 +139,7 @@ contains
     ! -------------------------------------------------------------------- !
     integer :: iErr
     character(len=labelLen) :: loc_key
+    character(len=labelLen) :: timeform
     integer :: thandle
     logical :: use_iter
     logical :: loc_iter_default
@@ -144,7 +175,7 @@ contains
 
       call aot_get_val(L       = conf,         &
         &              thandle = thandle,      &
-        &              val     = me%timeform,  &
+        &              val     = timeform,     &
         &              key     = 'simform',    &
         &              default = default_form, &
         &              ErrCode = iErr          )
@@ -155,7 +186,7 @@ contains
       call aot_get_val(L       = conf,         &
         &              thandle = parent,       &
         &              key     = loc_key,      &
-        &              val     = me%timeform,  &
+        &              val     = timeform,     &
         &              default = default_form, &
         &              ErrCode = iErr          )
     end if
@@ -163,14 +194,16 @@ contains
     call aot_table_close(conf, thandle)
 
     if (use_iter) then
-      me%timeform = '(I0)'
-      me%stamp => tem_timeformatter_iter_stamp
+      me = tem_timeformatter_init(timeform = '(I0)',                      &
+        &                         stamp    = tem_timeformatter_iter_stamp )
     else
-      me%stamp => tem_timeformatter_sim_stamp
+      me = tem_timeformatter_init(timeform = timeform,                   &
+        &                         stamp    = tem_timeformatter_sim_stamp )
     end if
 
   end subroutine tem_timeformatter_load
   ! ************************************************************************ !
+
 
   ! ************************************************************************ !
   !> Generate a time stamp from the simulation time in the given time

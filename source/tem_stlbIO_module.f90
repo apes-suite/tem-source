@@ -1,5 +1,5 @@
 ! Copyright (c) 2013-2014 Simon Zimny <s.zimny@grs-sim.de>
-! Copyright (c) 2013-2014, 2019, 2021 Harald Klimach <harald.klimach@dlr.de>
+! Copyright (c) 2013-2014, 2019, 2021, 2025 Harald Klimach <harald.klimach@dlr.de>
 ! Copyright (c) 2016 Tobias Schneider <tobias1.schneider@student.uni-siegen.de>
 ! Copyright (c) 2016 Peter Vitt <peter.vitt2@uni-siegen.de>
 !

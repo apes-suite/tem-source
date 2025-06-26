@@ -2,7 +2,7 @@
 ! Copyright (c) 2015-2016 Jiaxing Qi <jiaxing.qi@uni-siegen.de>
 ! Copyright (c) 2016, 2019 Peter Vitt <peter.vitt2@uni-siegen.de>
 ! Copyright (c) 2016 Tobias Schneider <tobias1.schneider@student.uni-siegen.de>
-! Copyright (c) 2016, 2021 Harald Klimach <harald.klimach@dlr.de>
+! Copyright (c) 2016, 2021, 2025 Harald Klimach <harald.klimach@dlr.de>
 ! Copyright (c) 2016 Nikhil Anand <nikhil.anand@uni-siegen.de>
 ! Copyright (c) 2018 Raphael Haupt <Raphael.Haupt@student.uni-siegen.de>
 ! Copyright (c) 2021 Jana Gericke <jana.gericke@dlr.de>
