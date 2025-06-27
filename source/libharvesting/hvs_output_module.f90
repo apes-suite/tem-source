@@ -333,9 +333,9 @@ contains
   !> Initialize the output for a given mesh.
   !!
   !! This creates vertex for a mesh and fill hvs_output_file_type.
-  subroutine hvs_output_init(out_file, out_config, tree, varsys, subtree,      &
-    &                        varPos, basename, timeControl, nDofs, globProc,   &
-    &                        solver, geometry, solSpec_unit)
+  subroutine hvs_output_init(out_file, out_config, tree, varsys, subtree,    &
+    &                        varPos, basename, timeControl, nDofs, globProc, &
+    &                        solver, geometry, solSpec_unit                  )
     ! --------------------------------------------------------------------------!
     !> Output file settings
     !! It must be intent inout since ascii%reduction and trasient%reduction
@@ -535,6 +535,7 @@ contains
         &                         nPoints      = nPoints,               &
         &                         glob_nPoints = glob_nPoints,          &
         &                         timeControl  = timeControl,           &
+        &                         timeform     = out_file%timeform,     &
         &                         solver       = solver,                &
         &                         geometry     = geometry               )
     case(hvs_Internal)

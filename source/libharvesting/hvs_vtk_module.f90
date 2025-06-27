@@ -63,9 +63,7 @@ module hvs_vtk_module
   use tem_logging_module,      only: logunit
   use tem_subtree_type_module, only: tem_subtree_type
   use tem_timeformatter_module, only: tem_timeformatter_type
-  use tem_time_module,         only: tem_time_type,      &
-    &                                tem_time_sim_stamp, &
-    &                                tem_time_iter_stamp
+  use tem_time_module,         only: tem_time_type
   use tem_tools_module,        only: upper_to_lower
   use tem_varsys_module,       only: tem_varsys_type
   use tem_vrtx_module,         only: tem_vrtx_type
@@ -246,6 +244,7 @@ contains
     ! ----------------------------------------------------------------------!
     character(len=PathLen) :: filename
     character(len=PathLen) :: headerline
+    character(len=LabelLen) :: timestring
     character :: linebreak
     integer :: pos
     character(len=labelLen) :: byte_order
@@ -263,10 +262,12 @@ contains
       write(filename,'(a)') trim(vtk_file%basename)
     end if
 
+    timestring = '0'
     vtk_file%timestamp = ''
     if (present(time)) then
+      timestring = trim(timeform%stamp(time))
       write(vtk_file%timestamp, '(a)') &
-        & '_t' // trim(timeform%stamp(time))
+        & '_t' // trim(timestring)
     end if
 
     write(filename,'(a)') trim(filename) // trim(vtk_file%timestamp) // '.vtu'
@@ -360,7 +361,7 @@ contains
     if ( vtk_file%write_pvd ) then
       pos = INDEX(trim(filename), pathSep, .true.)
       write(headerline,'(a)') '  <DataSet timestep="' &
-        &                     //trim(tem_time_sim_stamp(time))//'" file="' &
+        &                     //trim(timestring)//'" file="' &
         &                     //trim(filename(pos+1:))//'"/>'
       write(vtk_file%pvdunit) trim(headerline)//linebreak
       flush(vtk_file%pvdunit)

@@ -115,11 +115,12 @@ module tem_restart_module
     &                                tem_timeControl_load, &
     &                                tem_timeControl_align_trigger, &
     &                                tem_timeControl_dump
-  use tem_time_module,         only: tem_time_sim_stamp, tem_time_type, &
+  use tem_time_module,         only: tem_time_type, &
     &                                tem_time_out, tem_time_load,       &
     &                                tem_time_set_clock, tem_time_dump, &
     &                                tem_time_reset
-  use tem_timeformatter_module, only: tem_timeformatter_type,&
+  use tem_timeformatter_module, only: tem_timeformatter_type, &
+    &                                 tem_timeformatter_init, &
     &                                 tem_timeformatter_load
   use tem_tools_module,        only: tem_horizontalSpacer
   use tem_varSys_module,       only: tem_varSys_type, tem_varSys_out,  &
@@ -1334,6 +1335,7 @@ contains
     integer :: iError
     type( flu_State ) :: conf
     character(len=labelLen) :: buffer
+    type(tem_timeformatter_type) :: timeform
     ! -------------------------------------------------------------------- !
     write(logUnit(1),*) 'Opening Restart Header '         &
       &                 // trim(me%controller%readFileName)
@@ -1386,7 +1388,8 @@ contains
       &                 me          = timing,            &
       &                 clock_start = timing%clock_start )
 
-    me%header%timestamp = trim(tem_time_sim_stamp(timing))
+    timeform = tem_timeformatter_init()
+    me%header%timestamp = trim(timeform%stamp(timing))
     write(logUnit(1),*) 'Restarting from point in time:'
     call tem_time_dump(timing, logUnit(1))
 
